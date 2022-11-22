@@ -251,7 +251,7 @@ def test_authorized_url_invalid_response():
                 base_url="https://a.b.c",
             )
         match = re.search(r"{[^}]*}", str(missingError.value))
-        err_dict = json.loads(match.group(0))
+        err_dict = json.loads(match[0])
         assert err_dict == {
             "state": "random-string",
             "error_message": "IMUSEFUL",
@@ -314,7 +314,7 @@ def test_authorized_url_with_pkce():
         # reset the session before the request
         with client.session_transaction() as sess:
             sess["test-service_oauth_state"] = _state
-            sess[f"test-service_oauth_code_verifier"] = _code_verifier
+            sess["test-service_oauth_code_verifier"] = _code_verifier
         # make the request
         resp = client.get(
             f"/login/test-service/authorized?code=secret-code&state={_state}&code_verifier={_code_verifier}",
@@ -710,7 +710,7 @@ def test_signal_sender_oauth_authorized(request):
             "/login/test2/authorized?code=secret-code&state=random-string"
         )
 
-    assert len(calls) == 0
+    assert not calls
 
     with app.test_client() as client:
         with client.session_transaction() as sess:

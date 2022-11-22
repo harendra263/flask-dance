@@ -420,7 +420,7 @@ def test_signal_sender_oauth_authorized(request):
             "/login/test2/authorized?oauth_token=foobar&oauth_verifier=xyz"
         )
 
-    assert len(calls) == 0
+    assert not calls
 
     with app.test_client() as client:
         bp.session.fetch_access_token = mock.Mock(return_value="test-token")

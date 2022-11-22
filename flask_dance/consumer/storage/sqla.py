@@ -33,8 +33,8 @@ class OAuthConsumerMixin:
     """
 
     @declared_attr
-    def __tablename__(cls):
-        return f"flask_dance_{cls.__name__.lower()}"
+    def __tablename__(self):
+        return f"flask_dance_{self.__name__.lower()}"
 
     id = Column(Integer, primary_key=True)
     provider = Column(String(50), nullable=False)
@@ -42,13 +42,12 @@ class OAuthConsumerMixin:
     token = Column(MutableDict.as_mutable(JSON), nullable=False)
 
     def __repr__(self):
-        parts = []
-        parts.append(self.__class__.__name__)
+        parts = [self.__class__.__name__]
         if self.id:
             parts.append(f"id={self.id}")
         if self.provider:
             parts.append(f'provider="{self.provider}"')
-        return "<{}>".format(" ".join(parts))
+        return f'<{" ".join(parts)}>'
 
 
 class SQLAlchemyStorage(BaseStorage):
@@ -275,6 +274,4 @@ def _get_real_user(user, anon_user=None):
     if callable(user):
         # this is a function
         user = user()
-    if anon_user and isinstance(user, anon_user):
-        return None
-    return user
+    return None if anon_user and isinstance(user, anon_user) else user

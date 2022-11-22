@@ -229,6 +229,7 @@ def test_sqla_storage(app, db, blueprint, request):
 
 
 def test_sqla_load_token_for_user(app, db, blueprint, request):
+
     class User(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         name = db.Column(db.String(80))
@@ -291,8 +292,8 @@ def test_sqla_load_token_for_user(app, db, blueprint, request):
 
     # try deleting user tokens
     del blueprint.token
-    assert sess.token == None
-    assert blueprint.token == None
+    assert sess.token is None
+    assert blueprint.token is None
 
     # shouldn't affect alice's token
     blueprint.config["user_id"] = alice.id
@@ -604,7 +605,7 @@ def test_sqla_flask_login_preload_logged_in_user(app, db, blueprint, request):
         # now let's try chuck
         login_user(chuck)
         blueprint.session.get("/noop")
-        assert blueprint.session.token == None
+        assert blueprint.session.token is None
 
     with app.test_request_context("/"):
         # no one is logged in -- this is an anonymous user
@@ -654,10 +655,11 @@ def test_sqla_flask_login_no_user_required(app, db, blueprint, request):
         logout_user()
         # this should *not* raise an error
         blueprint.session.get("/noop")
-        assert blueprint.session.token == None
+        assert blueprint.session.token is None
 
 
 def test_sqla_delete_token(app, db, blueprint, request):
+
     class OAuth(OAuthConsumerMixin, db.Model):
         pass
 
@@ -686,7 +688,7 @@ def test_sqla_delete_token(app, db, blueprint, request):
         "scope": ["blah"],
     }
     del blueprint.token
-    assert blueprint.token == None
+    assert blueprint.token is None
     assert len(OAuth.query.all()) == 0
 
 
